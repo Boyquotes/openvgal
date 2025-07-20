@@ -1,17 +1,23 @@
 https://github.com/lbartworks/openvgal/assets/121262093/517b6b67-7a87-4f2c-8166-b5c9314ff9e9
 
 
-# OpenVgal v2
+# OpenVgal v2.1
 
  (Open source Virtual Gallery)
 Virtual 3D gallery for art showcase. Based on Babylon.js
 
 -----------------------------------------
 
-Version 2 brings some significant improvements:
+Version 2 brought some significant improvements:
 - Making it easier for anyone to test it in their own computer. I have packed all into a single executable.
 - An installation video is available.
 - Improvements in lights and galleries
+
+Version 2.1 incorporates a banner or overlay at the bottom, permanently shown to help:
+- Getting help on how to navigate
+- Show information on artworks
+- Navigate automatically the gallery, placing you in front 
+- (potentially) Redirect your visitor to purchase/mint artwork
 
 OpenVgal started in June 2022 as a personal project to provide myself, or anyone, a way to build an interactive 3D virtual gallery programmatically. What this means is that you do not need to design the hall or halls of the galleries, or deal with the 3D work, or the browser code to move around it. You just need organize your collections in folders and run some code provided here.  I was inspired by what Oncyber was creating but they had not open sourced the project. 
 
@@ -252,6 +258,10 @@ OpenVgal supports that you load directly a fully configured .glb file.
 
 ## 4. Changelog
 
+:new: **Update (20 July 2025).** :new: 
+
+New overlay wiht information, help and redirects
+
 :new: **Update (21 April 2025).** :new: 
 
 Electron app
@@ -322,7 +332,7 @@ ON-the-fly built incorporated. If the .glb objects are not available the code wi
 - [x] A blender based hall builder with textures baked manually.
 - [X]	Better management of mobile devices
 - [X]	Framing for artwork
-- [X]	Titles and information for the artwork
+- [X]	Titles and information for the artwork (improved now)
 
 
 

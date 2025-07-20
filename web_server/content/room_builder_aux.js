@@ -166,7 +166,7 @@ function populate_template(config_file, room_name,scene){
 		items_material.freeze();
 		items_material.specularColor=new BABYLON.Color3(0,0,0);
 		items_material.maxSimultaneousLights=max_lights;
-		let tex=new BABYLON.Texture(hallspics_prefix + gallery[item]["resource"]);
+		let tex=new BABYLON.Texture(hallspics_prefix + gallery[item]["resource"], scene);
 		items_material.diffuseTexture=tex;
 		
 		//get orientation
@@ -272,5 +272,41 @@ function reset_loadbar(){
 	document.getElementById("loadingBar_artwork").style.width =`${percentage_artwork}%`;
 }
 
+function manual_move(){
+	//get active camera
+	const camera = scene.activeCamera;
+	const camera_distance = 3;
 
+
+	var gallery=config_file_content[current_gallery];
+	var dict_items=Object.keys(gallery).filter(key => gallery[key]["resource_type"]== "image");
+	var n_items=dict_items.length;
+
+	//check limits
+	if (manual_navigation_idx<0){
+		manual_navigation_idx= n_items-1;
+	} else if (manual_navigation_idx ==n_items){
+		manual_navigation_idx=0;
+	}
+
+
+	//get position and vector. Assuming they are JSON strings of 3-element arrays [x, y, z]
+	let item_position_array = JSON.parse(gallery[dict_items[manual_navigation_idx]]['location']);
+	let item_vector_array = JSON.parse(gallery[dict_items[manual_navigation_idx]]['vector']);
+
+	// Create Babylon.js Vector3 objects
+	const target_position = new BABYLON.Vector3(item_position_array[0], item_position_array[2], item_position_array[1]);
+	const target_vector = new BABYLON.Vector3(item_vector_array[0], item_vector_array[2], item_vector_array[1]).normalize();
+
+	// Calculate the camera's position to be in front of the item
+	const camera_position = target_position.add(target_vector.scale(camera_distance));
+
+	// Aim the camera at the target
+	camera.position = camera_position;
+	camera.setTarget(target_position);
+
+	showInfoBox("Title:  " + gallery[dict_items[manual_navigation_idx]]["metadata"]);
+
+
+}
 	

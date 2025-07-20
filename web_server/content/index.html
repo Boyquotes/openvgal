@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LB Artworks</title>
 
        <style>
@@ -50,62 +51,6 @@
 		  width: 0%;
 		}
 		
-		#infoBox {
-			background-color: rgba(0, 0, 0, 0.7);
-			color: white;
-			font-family: 'Arial', sans-serif;
-			font-size: 24px;
-			padding: 20px;
-			position: fixed;
-			bottom: 10px;
-			left: 50%;
-			transform: translateX(-50%);
-			max-width: 600px;
-			border-radius: 10px;
-		}
-
-
-
-		#artTitle {
-			margin: 0;  /* Remove default margins */
-		}
-		
-		#overlay {
-		   display: none; /* Initially hidden */
-		   position: fixed;
-		   top: 0;
-		   left: 0;
-		   width: 100%;
-		   height: 100%;
-		   background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
-		   z-index: 10; /* Ensure it's above other elements */
-		   display: none;
-		   flex-direction: column; /* Stack children vertically */
-		   justify-content: flex-end; /* Align children to the bottom */
-		}
-
-		#imageContainer {
-		   display: flex;
-		   justify-content: center; /* Center items horizontally */
-		   align-items: center; /* Center items vertically */
-		   width: 100%; /* Full width */
-		   height: 30%;
-		   position: absolute;
-		   bottom: 0;
-		   padding: 10px; /* Padding at the bottom */
-		}
-		@keyframes pulse {
-			0% { transform: scale(1); }
-			50% { transform: scale(1.05); }
-			100% { transform: scale(1); }
-		}
-		.instruction-image {
-		   max-width: 40%; /* Limit width to 40% of screen width */
-		   max-height: 100%; /* Ensures the image doesn't exceed container's height */
-		   height: auto; /* Maintain aspect ratio */
-		   margin: 0 10px; /* Add space between images */
-		   animation: pulse 0.5s infinite ease-in-out;
-		}
 
 
 
@@ -113,24 +58,18 @@
 
     </style>
 
-    <script src="https://cdn.babylonjs.com/v7.54.0/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/v8.15.0/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
     <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
 	<!-- uncomment if you want to enable the functionality of saving as glb in the debug menu
 	<script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
 	-->
 	<script src="https://unpkg.com/earcut@2.1.1/dist/earcut.min.js"></script>
+    <link rel="stylesheet" href="overlay.css">
   </head>
 
   <body>
   
-	<div id="overlay">
-	   <div id="imageContainer">
-		  <img id="image1" alt="Instruction 1" class="instruction-image">
-		  <img id="image2" alt="Instruction 2" class="instruction-image">
-	   </div>
-	</div>
-
 
 
   
@@ -151,10 +90,6 @@
 		</div>
 		<p id="percentLoaded_artwork">0%</p>
 	</div>
-	
-	<div id="infoBox" style="display: none;">
-		<p id="artTitle"></p>
-	</div>
 
 	 <!--/////////////////////// CUSTOMIZE THIS VARLUE //////////////////////////////////-->	
 	<script>
@@ -163,9 +98,11 @@
     <script src='declarations.js'></script>
 	<!--/////////////////////////////////////////////////////////////////////////////////-->
   
+      
     <canvas id="renderCanvas" touch-action="none"></canvas>
 
 	 <script src='room_builder_aux.js'></script>
+    <script src='overlay.js'></script>
 
 	
     <script>
@@ -191,23 +128,14 @@
 	var current_gallery;
 	var door_material, wall_material, floor_material, header_material;
 	var BJS_materials={};
+	var manual_navigation_idx = null;
+
 	
 	//new materials
 	var floor_mat, walls_mat, ceiling_mat, board_mat;
 	
 	//device detections
 	var isTouchDevice = false;
-
-
-	if (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)) {
-	  isTouchDevice = true;
-	      document.getElementById('image1').src = icons_folder + "/touch_move.png";
-			document.getElementById('image2').src = icons_folder + "/touch_pan.png";
-	} else {
-	    document.getElementById('image1').src = icons_folder + "/keyboard_move.png";
-		document.getElementById('image2').src = icons_folder + "/keyboard_pan.png";
-	}
-	
 
 
 	var deviceAgent = navigator.userAgent.toLowerCase();
@@ -255,13 +183,7 @@
 	
 	}
 	
-	function showInfoBox(title) {
-		document.getElementById("artTitle").innerText = title;
-		document.getElementById("infoBox").style.display = "block";
-	}
 
-	
-	
 	function doesFileExist(urlToFile) {
 		var xhr = new XMLHttpRequest();
 		xhr.open('HEAD', urlToFile, false);
@@ -331,8 +253,6 @@
 			}
 			
 
-
-			
 			var light0 = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(0, 1, 0), scene);
 			var light00 = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(0, -1, 0), scene);
 
@@ -383,8 +303,10 @@
 				//the current gallery is updated with the user choice
 				current_gallery=evt.source.name;
 				current_gallery=current_gallery.replace(regul_exp_tail,"");
-				
 				current_gallery=current_gallery.replace(regul_exp_door, "");
+
+				//hide info box
+				hideInfoBox();
 				
 				//the new gallery assets are loaded unless they are already in memory
 				if (galleries[current_gallery]==undefined){
@@ -469,30 +391,19 @@
 									BABYLON.ActionManager.OnPickTrigger, galleryManager	));
 				}
 				
+
+
+				let indice=0;
 				for (const artwork of gallery_artworks){
 					scene.getMeshByName(artwork).actionManager= new BABYLON.ActionManager();
 					scene.getMeshByName(artwork).actionManager.registerAction(
 						new BABYLON.ExecuteCodeAction(
-							{ trigger: BABYLON.ActionManager.OnPointerOverTrigger },
-							function() {
-								showInfoBox("Title:  " + config_file_content[current_gallery][artwork.replace(/_[0-9]+$/g,"")]["metadata"]);
-							}
-						));
-					scene.getMeshByName(artwork).actionManager.registerAction(
-						new BABYLON.ExecuteCodeAction(
-							{ trigger: BABYLON.ActionManager.OnPointerOutTrigger },
-							function() {
-								document.getElementById("infoBox").style.display = "none";
-							}
-						));
-					
+							{ trigger: BABYLON.ActionManager.OnPickTrigger },
+							CB_artwork_picked(indice)
+						));					
+					indice++;
 				}
-				if ('first' in evt){
-					document.getElementById("overlay").style.display = "flex";
-					setTimeout(function() {
-						  document.getElementById("overlay").style.display = "none";
-					   }, 3000);
-				}
+
 		}
 		
 		// MAIN CODE /////////////////////////////////////
