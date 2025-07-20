@@ -55,6 +55,12 @@ Linux: 6ea8f1e08693c9b402698540df92a899
 Mac: 9990f05055b6a24e28b1f1310ae218f5
 ```
 
+```
+v2.1.0 sh256
+Windows: 3b4c14d0cdcb0ba83cd0014e5e17b19692a4b484163b37105c8370b76ab4f4d2
+Linux: e2a0076d68f1db003a8f51a63a78d387ecd5e88005f335e293a547d5c76b96a9
+Mac: 3f3aa9d0b272db97bb3d672aa19f1c1470d3c0b1c26d2931e2b093d40ae004fc
+```
 
 ## 1. Steps to create a gallery
 Follow the easy or advanced tutorials, available here:
