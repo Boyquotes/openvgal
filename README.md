@@ -1,10 +1,11 @@
 https://github.com/lbartworks/openvgal/assets/121262093/517b6b67-7a87-4f2c-8166-b5c9314ff9e9
 
 
-# OpenVgal v2.1
+# OpenVgal v2.2
 
  (Open source Virtual Gallery)
 Virtual 3D gallery for art showcase. Based on Babylon.js
+If you want to receive updates, subscribe to the [newsletter](https://nostromophoto.com/newslettter/)
 
 -----------------------------------------
 
@@ -18,6 +19,8 @@ Version 2.1 incorporates a banner or overlay at the bottom, permanently shown to
 - Show information on artworks
 - Navigate automatically the gallery, placing you in front 
 - (potentially) Redirect your visitor to purchase/mint artwork
+
+Version 2.2 incorporates the Babylon library to make sure works on subsequent Babylon JS updates. Currently uses v8.25
 
 OpenVgal started in June 2022 as a personal project to provide myself, or anyone, a way to build an interactive 3D virtual gallery programmatically. What this means is that you do not need to design the hall or halls of the galleries, or deal with the 3D work, or the browser code to move around it. You just need organize your collections in folders and run some code provided here.  I was inspired by what Oncyber was creating but they had not open sourced the project. 
 
