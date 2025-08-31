@@ -85,13 +85,13 @@ jobs:
       # This runs on both main pushes and tag pushes
       # Ensures python code builds correctly even before tagging
       run: |
-      cd web_server
-      pyinstaller --onefile --clean --noconfirm --distpath . http_server.py
-      cd ..
-      cd python
-      pyinstaller --onefile --clean --noconfirm --distpath . --collect-all numpy VR_gallery.py
-      cd ..
-      shell: bash
+        cd web_server
+        pyinstaller --onefile --clean --noconfirm --distpath . http_server.py
+        cd ..
+        cd python
+        pyinstaller --onefile --clean --noconfirm --distpath . --collect-all numpy VR_gallery.py
+        cd ..
+        shell: bash
 
     - name: Verify Python executables (CI Check) - Windows
       if: matrix.os == 'windows-latest'
