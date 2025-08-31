@@ -10,7 +10,7 @@ let mainWindow;
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1080,
-    height: 800,
+    height: 850,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -28,16 +28,35 @@ app.whenReady().then(() => {
 
 
 
+// Initialize server manager
+const serverManager = new ServerManager();
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
 
-// Initialize server manager
-const serverManager = new ServerManager();
+// Handle before-quit event to ensure server is stopped
+app.on('before-quit', () => {
+  console.log('Application is about to quit, ensuring server is stopped...');
+  if (serverManager.isServerRunning()) {
+    console.log('Server is running, initiating shutdown...');
+  }
+});
 
 // Kill web server when app is quitting
-app.on('quit', () => {
-  serverManager.cleanup();
+app.on('will-quit', async (event) => {
+  // Prevent the app from quitting until cleanup is complete
+  event.preventDefault();
+  
+  try {
+    // Wait for server cleanup to complete
+    await serverManager.cleanup();
+    // Now allow the app to quit
+    app.exit();
+  } catch (error) {
+    console.error('Error during cleanup:', error);
+    app.exit(1); // Exit with error code
+  }
 });
 
 // Launch web server

@@ -2,11 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>OpenVGal 2.1 Support tool</title>
+  <title>OpenVGal 2.2 Support tool</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
+    }
+    #replacement-status, #generate-message {
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      height: 50px;
+      max-height: 50px;
+      overflow-y: scroll;
+      background-color: #f5f5f5;
+      font-family: monospace;
     }
     .tab {
       overflow: hidden;
@@ -87,7 +97,7 @@
   </style>
 </head>
 <body>
-  <h1>OpenVGal 2.0 support tool</h1>
+  <h1>OpenVGal 2.2 support tool</h1>
   <div class="tab">
     <button class="tablinks" onclick="openTab(event, 'Build')">Build</button>
     <button class="tablinks" onclick="openTab(event, 'Tools')">Tools</button>
@@ -104,7 +114,8 @@
       <p>With:</p>
       <input type="text" id="replacement-url" placeholder="Enter replacement text" style="width: 300px; margin-bottom: 10px;"><br>
       <button id="convert-button" style="padding: 8px 16px;">Convert</button>
-      <div id="replacement-status" style="margin-top: 10px; border: 1px solid #ccc; padding: 10px; max-height: 200px; overflow-y: auto; background-color: #f5f5f5;"></div>
+      <button id="clear-url-status" style="padding: 8px 16px; margin-left: 10px;">Clear Messages</button>
+      <div id="replacement-status"></div>
     </div>
   </div>
 
@@ -120,8 +131,9 @@
     <button id="generate-json">Generate JSON</button>
     <button id="launch">Launch</button>
     <button id="shutdown">Shutdown</button>
+    <button id="clear-build-status" style="margin-left: 10px;">Clear Messages</button>
   </div>
-  <div id="generate-message" style="margin-top: 10px; border: 1px solid #ccc; padding: 10px; max-height: 200px; overflow-y: auto; background-color: #f5f5f5;"></div>
+  <div id="generate-message"></div>
 
   <div class="loading-overlay">
     <div class="loading-spinner"></div>

@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 /**
  * Displays a message in the UI with specified color
  * @param {string} text - The message to display
- * @param {string} color - The color of the message (default: 'red')
+ * @param {string} color - The color of the message (default: 'black')
  */
 function displayMessage(text, color = 'black') {
   const messageDiv = document.getElementById('generate-message');
@@ -47,14 +47,11 @@ function displayMessage(text, color = 'black') {
   }
   console.log('Setting message:', text);
   
-  // Clear previous content
-  messageDiv.innerHTML = '';
-  
-  // Handle multi-line messages by preserving line breaks
+  // Create a new element for the message
   if (text.includes('\n')) {
     // For multi-line messages, create a pre element to preserve formatting
     const pre = document.createElement('pre');
-    pre.style.margin = '0';
+    pre.style.margin = '5px 0';
     pre.style.fontFamily = 'monospace';
     pre.style.whiteSpace = 'pre-wrap';
     pre.style.wordBreak = 'break-word';
@@ -62,10 +59,16 @@ function displayMessage(text, color = 'black') {
     pre.textContent = text;
     messageDiv.appendChild(pre);
   } else {
-    // For single line messages, just set the text content
-    messageDiv.textContent = text;
-    messageDiv.style.color = color;
+    // For single line messages, create a paragraph
+    const paragraph = document.createElement('p');
+    paragraph.textContent = text;
+    paragraph.style.color = color;
+    paragraph.style.margin = '5px 0';
+    messageDiv.appendChild(paragraph);
   }
+  
+  // Scroll to the bottom to show the latest message
+  messageDiv.scrollTop = messageDiv.scrollHeight;
 }
 
 /**
@@ -186,6 +189,16 @@ document.getElementById('shutdown').addEventListener('click', () => {
   // Send IPC message to main process to stop web server
   ipcRenderer.send('stop-web-server');
 });
+
+// Clear build status messages button
+document.getElementById('clear-build-status').addEventListener('click', () => {
+  const messageDiv = document.getElementById('generate-message');
+  if (messageDiv) {
+    messageDiv.innerHTML = '';
+  }
+});
+
+// Note: Clear URL replacement status is handled in the URLReplacer class
 
 // Handle server stopped
 ipcRenderer.on('server-stopped', () => {

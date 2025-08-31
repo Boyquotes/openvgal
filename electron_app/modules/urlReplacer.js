@@ -31,6 +31,16 @@ class URLReplacer {
      */
     setupEventListeners() {
         this.convertButton.addEventListener('click', () => this.handleConvertClick());
+        document.getElementById('clear-url-status').addEventListener('click', () => this.clearStatus());
+    }
+    
+    /**
+     * Clears all status messages
+     */
+    clearStatus() {
+        if (this.statusDiv) {
+            this.statusDiv.innerHTML = '';
+        }
     }
 
     /**
@@ -90,8 +100,17 @@ class URLReplacer {
      * @param {string} color - The color of the message
      */
     setStatus(message, color) {
-        this.statusDiv.textContent = message;
-        this.statusDiv.style.color = color;
+        // Create a new paragraph element for the message
+        const paragraph = document.createElement('p');
+        paragraph.textContent = message;
+        paragraph.style.color = color;
+        paragraph.style.margin = '0 0 5px 0';
+        
+        // Append the new message to the status div
+        this.statusDiv.appendChild(paragraph);
+        
+        // Scroll to the bottom to show the latest message
+        this.statusDiv.scrollTop = this.statusDiv.scrollHeight;
     }
 }
 

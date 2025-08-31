@@ -5,6 +5,7 @@ class ServerManager {
   constructor() {
     this.webServerProcess = null;
     this.serverStartTimeout = null;
+    this.isTerminating = false;
   }
 
   /**
@@ -170,12 +171,15 @@ class ServerManager {
       clearTimeout(this.serverStartTimeout);
       this.serverStartTimeout = null;
     }
-    this.webServerProcess = null;
-
-    if (code !== 0) {
-      event.sender.send('launch-error', `Web server process exited with code ${code}`);
+    if (this.isTerminating) {
+      console.log('Process closed during termination');
+    } else {
+      if (code !== 0) {
+        event.sender.send('launch-error', `Web server process exited with code ${code}`);
+      }
+      event.sender.send('server-stopped');
     }
-    event.sender.send('server-stopped');
+    this.webServerProcess = null;
   }
 
   /**
@@ -219,6 +223,7 @@ class ServerManager {
         resolve();
         return;
       }
+      this.isTerminating = true;
 
       try {
         console.log(isCleanup ? 'Cleaning up web server process tree...' : 'Attempting to stop web server process and its children...');
@@ -243,6 +248,7 @@ class ServerManager {
                 event.sender.send('server-stopped');
               }
               resolve();
+              this.isTerminating = false;
             });
           } else {
             console.log(isCleanup ? 'Web server process tree cleaned up successfully' : 'Web server process tree stopped successfully');
@@ -251,6 +257,7 @@ class ServerManager {
               event.sender.send('server-stopped');
             }
             resolve();
+            this.isTerminating = false;
           }
         });
       } catch (err) {
@@ -260,6 +267,7 @@ class ServerManager {
         }
         this.webServerProcess = null;
         resolve();
+        this.isTerminating = false;
       }
     });
   }
@@ -296,6 +304,7 @@ class ServerManager {
 
   /**
    * Clean up resources
+   * @returns {Promise<void>} A promise that resolves when cleanup is complete
    */
   cleanup() {
     // Clear any pending timeouts first
@@ -304,8 +313,8 @@ class ServerManager {
       this.serverStartTimeout = null;
     }
     
-    // Terminate the process if it exists
-    this._terminateProcess(null, true);
+    // Terminate the process if it exists and return the promise
+    return this._terminateProcess(null, true);
   }
 }
 
