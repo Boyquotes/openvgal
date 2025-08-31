@@ -91,7 +91,7 @@ jobs:
         cd python
         pyinstaller --onefile --clean --noconfirm --distpath . --collect-all numpy VR_gallery.py
         cd ..
-        shell: bash
+      shell: bash
 
     - name: Verify Python executables (CI Check) - Windows
       if: matrix.os == 'windows-latest'
