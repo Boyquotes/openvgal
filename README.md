@@ -5,6 +5,7 @@ https://github.com/lbartworks/openvgal/assets/121262093/517b6b67-7a87-4f2c-8166-
 
  (Open source Virtual Gallery)
 Virtual 3D gallery for art showcase. Based on Babylon.js
+
 If you want to receive updates, subscribe to the [newsletter](https://nostromophoto.com/newslettter/)
 
 -----------------------------------------
